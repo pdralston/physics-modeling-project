@@ -48,9 +48,12 @@ size = width, height = 1536, 864
 black = 0, 0, 0
 green = 0, 255, 0
 white = 255, 255, 255
+background = pygame.image.load("GraphBackground.png")
 radius = 2
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Bullet Model")
+screen.blit(background, (0, 0))
+pygame.display.update()
 x = 1
 y = 1
 mass = .016 #mass in kg
@@ -93,4 +96,4 @@ while 1:
             y = position(y, vel[1])
             f.write("X: {0}\nY: {1}\nVelocity: {2}\nDrag: {3}\nAcceleration: {4}\n".format(x, y, vel, currDrag, accel))
             toPrint = "x = " + str(x) + " y = " + str(y) + " speed = " + str(dragVel**(1/2.0)) 
-            screen.fill(black, (0,0,600,100))
+            screen.fill(black, (0,0,570,50))

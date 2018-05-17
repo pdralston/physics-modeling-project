@@ -10,13 +10,12 @@ def sin():  return math.sin(math.radians(theta))
 
 def cos():  return math.cos(math.radians(theta)) 
 
-def drag(currVel, xDirect):
-      calcDrag = (.5 * rho * math.pow(currVel, 2) * surface_area)
-      return calcDrag if xDirect else -1 * (calcDrag * currVel) / math.fabs(currVel)
+def drag(currVel):
+      calcDrag = (.5 * rho * currVel * surface_area)
+      return (calcDrag * (-vel[0] / currVel**(1/2.0)), calcDrag * (-vel[1] / currVel**(1/2.0)))
 
-def acceleration(currDrag, yDirec): return gravity + currDrag / mass if yDirec else -1 * currDrag / mass
-
-def velocity(velo, accel): return velo + accel * step
+def acceleration(currDrag): return (currDrag[0] / mass, gravity + currDrag[1] /mass)
+def velocity(): return (vel[0] + accel[0] * step, vel[1] + accel[1] * step)
 
 def position(pos, velo): return pos + velo * step
 
@@ -68,29 +67,30 @@ drag_c = .224
 myfont = pygame.font.SysFont('Helvetica', 20)
 toPrint = "x = " + str(x) + " y = " + str(y)
 count = 0;
+f = open("output.txt", "w+")
 if not begin_prompt():
       pygame.quit()
 while 1:
-      count += 1
       for event in pygame.event.get():
             if event.type == pygame.QUIT:
                   pygame.quit()
       keys = pygame.key.get_pressed()
       if keys[pygame.K_RETURN]:
             base_values
-            screen.fill(black)
+            #screen.fill(black)
             if not begin_prompt():
                   pygame.quit()
       if(y >= radius / 2):
             if (count % 10 == 0):
                   draw_bullet()
                   count = 0
-            currDrag = [drag(vel[0], True), drag(vel[1], False)]
-            accel = [acceleration(currDrag[0], False),
-                     acceleration(currDrag[1], True)]
-            vel[0] = velocity(vel[0], accel[0])
-            vel[1] = velocity(vel[1], accel[1])
+            count += 1
+            dragVel = math.pow(vel[0], 2) + math.pow(vel[1], 2)
+            currDrag = drag(dragVel)
+            accel = acceleration(currDrag)
+            vel = velocity() 
             x = position(x, vel[0])
             y = position(y, vel[1])
-            toPrint = "x = " + str(x) + " y = " + str(y)
+            f.write("X: {0}\nY: {1}\nVelocity: {2}\nDrag: {3}\nAcceleration: {4}\n".format(x, y, vel, currDrag, accel))
+            toPrint = "x = " + str(x) + " y = " + str(y) + " speed = " + str(dragVel**(1/2.0)) 
             screen.fill(black, (0,0,600,100))
